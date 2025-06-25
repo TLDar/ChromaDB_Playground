@@ -1,3 +1,4 @@
+from turtle import st
 import fitz  # PyMuPDF
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.document_loaders import PyMuPDFLoader
@@ -25,14 +26,26 @@ def process_pdf(pdf_file):
 
     return chunks
 
-def define_context(query, chunks):
+def define_db_and_store_embeddings(chunks, embedder):
+    rag_collection = "rag_collection"
+    
+    db = Chroma.from_documents(
+        chunks,
+        embedding=embedder,
+        persist_directory="./chroma_db",
+        collection_name=rag_collection
+    )
+    
+    return db
+
+def define_context(query, db):
     retriever = db.as_retriever(search_kwargs={"k": 5})
     relevant_chunks = retriever.invoke(query) # looking for the top 5 answers (ie with minimal distance to the query)
     context = "\n".join([doc.page_content for doc in relevant_chunks])
     return context
 
-def query_llm(query, chunks):
-    context = define_context(query, chunks)
+def query_llm(query, db):
+    context = define_context(query, db)
     prompt = f"Answer the question based on this context:\n\n{context}\n\nQ: {query}\nA:"
 
 def call_llm_api_mistral(query, context):
@@ -52,3 +65,4 @@ def call_llm_api_mistral(query, context):
         print("Exception during parsing:", e)
         print("Response text:", response.text)
         return None
+    
