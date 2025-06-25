@@ -6,7 +6,7 @@ This project utilizes Retrieval-Augmented Generation (RAG) to extract key inform
 
 ## Content
 
-This repository currently contains a set of Jupyter notebooks used for experimenting with various tools and technologies (ChromaDB, embeddings, RAG).
+This repository contains a set of Jupyter notebooks used for experimenting with various tools and technologies (ChromaDB, embeddings, RAG). It also includes a Streamlit app that provides a user-friendly interface for querying a research paper using a RAG pipeline powered by an LLM.
 
 ## Project Genesis
 
@@ -20,5 +20,4 @@ This project was inspired by the work of Thu Vu in [this video](https://www.yout
 - **Hugging Face Transformers (local)** – Utilized locally to generate text embeddings by loading pre-trained models.
 - **Jupyter Notebook** – Interactive environment for developing and testing code.
 - **ChromaDB** – Open-source vector database for storing and retrieving document embeddings.
-
-
+- **Streamlit** – Used to build an interactive web app for querying research papers via a RAG pipeline.
