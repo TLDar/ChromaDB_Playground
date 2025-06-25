@@ -52,8 +52,17 @@ def define_context(query, db):
 
 def query_llm(query, db):
     context = define_context(query, db)
-    prompt = f"Answer the question based on this context:\n\n{context}\n\nQ: {query}\nA:"
-    return call_llm_api_mistral(prompt)
+    prompt = f"Answer the question based on this context:\n\n{context}\n\nQuestion: {query}\nAnswer:"
+    response = call_llm_api_mistral(prompt)
+
+    if response is not None:
+        # Regular expression pattern to extract answers
+        pattern = r"Answer:\s*(.*)"
+        # Find all matches
+        answer = re.findall(pattern, response)
+        return answer[0]
+    else :
+        return "There has been an error while querying the LLM."
 
 def call_llm_api_mistral(prompt):
     response = requests.post(API_URL_MISTRAL, headers=headers, json={"inputs": prompt})
