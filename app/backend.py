@@ -12,6 +12,12 @@ import pandas as pd
 import re
 #from openai import OpenAI  # Replace with actual API if different
 
+API_URL_MISTRAL = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3"
+API_KEY = os.getenv("API_KEY")
+headers = {
+    "Authorization": f"Bearer {API_KEY}"
+}
+
 def process_pdf(pdf_file):
     loader = PyMuPDFLoader(pdf_file)
 
@@ -47,9 +53,9 @@ def define_context(query, db):
 def query_llm(query, db):
     context = define_context(query, db)
     prompt = f"Answer the question based on this context:\n\n{context}\n\nQ: {query}\nA:"
+    return call_llm_api_mistral(prompt)
 
-def call_llm_api_mistral(query, context):
-    prompt = f"Context: {context}\n\nQuestion: {query}\nAnswer:"
+def call_llm_api_mistral(prompt):
     response = requests.post(API_URL_MISTRAL, headers=headers, json={"inputs": prompt})
     try:
         data = response.json()

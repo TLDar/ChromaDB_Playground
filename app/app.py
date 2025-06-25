@@ -37,15 +37,18 @@ if pdf_file:
      
     embedding_model = st.session_state.get("embedding_model", None)
     
-    if embedding_model:
+    if "db" not in st.session_state and embedding_model:
         with st.spinner("Processing chunks to define embeddings..."):
             db = define_db_and_store_embeddings(chunks, embedding_model)
+            st.session_state.db = db
             st.success("Embeddings defined.")
     
     query = st.text_input("Ask a question about the paper:")
+    
+    db = st.session_state.get("db", None)
 
-    if query:
+    if db and query:
         with st.spinner("Querying LLM..."):
-            response = query_llm(query, chunks, db)
+            response = query_llm(query, db)
             st.write("### Response")
             st.markdown(response)
